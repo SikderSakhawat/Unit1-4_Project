@@ -1,37 +1,65 @@
-import java.math.*;
 /** PRE-CONDITIONS
  * ALL real numbers are fair game (negatives, positives, rational numbers, etc.)
  * your number cannot be irrational (e.g. 2/3, pi, etc.)
  */
 public class SigFigCalc {
-    private String input; // sets input from user input of a number
-
+    private String inputNum; // sets input from user input of a number
     // adds the number the user inputs as an attribute to the sigFigCalc object
     public SigFigCalc(String number){
-        input = number;
+        this.inputNum = number;
     }
-
+    public SigFigCalc(String num1, String num2){}
 
     // We can count how many significant figures are found within the input number
     // This is kind of the "main" method that will determine the number of significant figures.
-    public int countSigFigs(String number){
-        String noDecNum = number.substring(0, number.indexOf(".")) + number.substring(number.indexOf(".") + 1);
-        int returnNum = 0;
-        if(number.indexOf(".") > -1){
+    public int countSigFigs(){
+        double numAsInt = Double.parseDouble(inputNum);
+        if(numAsInt < 1){ inputNum = "" + numAsInt * -1; } // for the case our number is negative
+        String noDecNum = inputNum.substring(0, inputNum.indexOf(".")) + inputNum.substring(inputNum.indexOf(".") + 1); // takes out the decimal in our string
+        if(containsDecimal(inputNum)){
             boolean findNonZero = false;
             int indexChecker = 0;
             while(!findNonZero){
-                if((noDecNum.indexOf(indexChecker) > 0) && (indexChecker < noDecNum.length())){
+                if((Integer.parseInt(String.valueOf(noDecNum.charAt(indexChecker))) > 0) && (indexChecker < noDecNum.length())){
                     noDecNum = noDecNum.substring(noDecNum.indexOf(indexChecker));
                     findNonZero = true;
                 }
                 indexChecker++;
             }
-
-        } else{
-            // count sigfigs but reject the trailing zeros
+        }else{
+            boolean findNonZero = false;
+            int firstNonZeroNum = 0;
+            int lastNonZeroNum = 0;
+            int indexChecker = noDecNum.length();
+            while(!findNonZero){
+                if((Integer.parseInt(String.valueOf(noDecNum.charAt(indexChecker))) > 0) && (indexChecker >= 0)){
+                    lastNonZeroNum = indexChecker;
+                    findNonZero = true;
+                }
+                indexChecker--;
+            }
+            indexChecker = 0;
+            while(!findNonZero){
+                if((Integer.parseInt(String.valueOf(noDecNum.charAt(indexChecker))) > 0) && (indexChecker < noDecNum.length())){
+                    firstNonZeroNum = indexChecker;
+                    findNonZero = true;
+                }
+                indexChecker++;
+            }
+            noDecNum.substring(firstNonZeroNum, lastNonZeroNum + 1);// count sigfigs but reject the trailing zeros
         }
-        return 1; // just something random to help model this thing out
+        return noDecNum.length();
+    }
+
+    public boolean containsDecimal(String num) {
+        String indexChecker = "";
+        for (int i = 0; i <= num.length() - 1; i++) {
+            indexChecker = "" + num.charAt(i);
+            if(indexChecker == "."){
+                return true;
+            }
+        }
+        return false;
     }
     public void giveAnswer(){
 
