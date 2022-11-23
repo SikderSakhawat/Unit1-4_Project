@@ -3,7 +3,8 @@ public class FindOrCompNumOfSigFig {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
         System.out.println("----COMPARE OR FIND SIGNIFICANT FIGURES----");
-        System.out.println(s.toString());
+        SigFigCalc rules = new SigFigCalc("0");
+        System.out.println(rules.toString());
         System.out.println("Would you like to compare how precise two numbers are, or check the number of significant figures of a number?\n" +
                 "(1 = comparing two values, 2 = counting the number of significant figures of a number)");
         String response = s.nextLine();
