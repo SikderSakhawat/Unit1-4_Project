@@ -13,40 +13,56 @@ public class SigFigCalc {
     // We can count how many significant figures are found within the input number
     // This is kind of the "main" method that will determine the number of significant figures.
     public int countSigFigs(){
-        double numAsInt = Double.parseDouble(inputNum);
-        if(numAsInt < 1){ inputNum = "" + numAsInt * -1; } // for the case our number is negative
-        String noDecNum = inputNum.substring(0, inputNum.indexOf(".")) + inputNum.substring(inputNum.indexOf(".") + 1); // takes out the decimal in our string
-        if(containsDecimal(inputNum)){
-            boolean findNonZero = false;
+        int numAsInt = 0;
+        double numAsDouble = 0;
+        String numStr = "";
+        String noDecNum = "";
+        // variables above initialize what is needed to have the rest of the method to run
+        if(Double.parseDouble(inputNum) % 1 == 0) {
+            numAsInt = (int) Math.abs(Double.parseDouble(inputNum));
+            numStr += numAsInt;
+            noDecNum = "" + numAsInt;
+        } else {
+            numAsDouble = Math.abs(Double.parseDouble(inputNum));
+            numStr+= numAsDouble;
+            int whereDecPoint = numStr.indexOf(".");
+            noDecNum = numStr.substring(0, whereDecPoint) + numStr.substring(whereDecPoint + 1);
+        }
+        if(Double.parseDouble(inputNum) == 0){
+            return 0;
+        } else if (inputNum.contains(".")){
+            int firstSigNum = 0;
             int indexChecker = 0;
-            while(!findNonZero){
-                if((Integer.parseInt(String.valueOf(noDecNum.charAt(indexChecker))) > 0) && (indexChecker < noDecNum.length())){
-                    noDecNum = noDecNum.substring(noDecNum.indexOf(indexChecker));
-                    findNonZero = true;
-                }
-                indexChecker++;
-            }
-        }else{
             boolean findNonZero = false;
-            int firstNonZeroNum = 0;
-            int lastNonZeroNum = 0;
-            int indexChecker = noDecNum.length();
-            while(!findNonZero){
-                if((Integer.parseInt(String.valueOf(noDecNum.charAt(indexChecker))) > 0) && (indexChecker >= 0)){
-                    lastNonZeroNum = indexChecker;
-                    findNonZero = true;
+            if(inputNum.contains(".")){
+                while(!findNonZero && indexChecker <= noDecNum.length()){
+                    if(Integer.parseInt(noDecNum.substring(indexChecker, indexChecker + 1)) > 0){
+                        firstSigNum = indexChecker;
+                        findNonZero = true;
+                    }
+                    indexChecker++;
                 }
-                indexChecker--;
-            }
-            indexChecker = 0;
-            while(!findNonZero){
-                if((Integer.parseInt(String.valueOf(noDecNum.charAt(indexChecker))) > 0) && (indexChecker < noDecNum.length())){
-                    firstNonZeroNum = indexChecker;
-                    findNonZero = true;
+                noDecNum = noDecNum.substring(firstSigNum);
+            } else {
+                int lastSigNum = 0;
+                while(!findNonZero && indexChecker <= noDecNum.length()){
+                    if(Integer.parseInt(noDecNum.substring(indexChecker, indexChecker + 1)) > 0){
+                        firstSigNum = indexChecker;
+                        findNonZero = true;
+                    }
+                    indexChecker++;
                 }
-                indexChecker++;
+                indexChecker = noDecNum.length();
+                findNonZero = false;
+                while(!findNonZero && indexChecker < 0){
+                    if(Integer.parseInt(noDecNum.substring(indexChecker, indexChecker + 1)) > 0){
+                        lastSigNum = indexChecker;
+                        findNonZero = true;
+                    }
+                    indexChecker--;
+                }
+                noDecNum = noDecNum.substring(firstSigNum, lastSigNum + 1);
             }
-            noDecNum.substring(firstNonZeroNum, lastNonZeroNum + 1);// count sigfigs but reject the trailing zeros
         }
         return noDecNum.length();
     }
@@ -61,6 +77,7 @@ public class SigFigCalc {
         }
         return false;
     }
+
     public void giveAnswer(){
 
     }
